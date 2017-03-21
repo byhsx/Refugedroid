@@ -1849,7 +1849,7 @@ int cryptfs_enable_pde(char *howarg, char *passwd, char *pde_passwd)
     off64_t pde_size, off;
     off64_t cur_blk, cln_blk;
 	unsigned int cnt;
-
+    char new_outvol[100];
     property_get("ro.crypto.state", encrypted_state, "");
     if (strcmp(encrypted_state, "unencrypted")) {
         SLOGE("Device is already running encrypted, aborting");
@@ -2120,6 +2120,9 @@ SLOGD("Chang PDE 1,%s,,,%s\n",master_key, salt);
     // *****************************************************************
     
     // create outer crypto mapping
+	snprintf(new_outvol,"%s","dmsetup create outer_volume /system/bin/dm-table");
+	 system(new_outvol);
+	 stpcpy(real_blkdev,"/dev/mapper/outer_volume");               //lvm outer volume
     create_crypto_blk_dev(&crypt_ftr, decrypted_master_key, real_blkdev, crypto_blkdev,
                   "userdata", 0);
 //Chang PDE
